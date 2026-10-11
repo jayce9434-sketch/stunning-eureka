@@ -1,0 +1,87 @@
+BUGBREAK UPDATE 1.2 · ENEMY UPRISING — QA REPORT
+
+STATIC / SYNTAX
+PASS - data.js parses with Node.
+PASS - ui.js parses with Node.
+PASS - game.js parses with Node.
+PASS - enemy-mode.js parses with Node.
+PASS - manifest.json parses as JSON.
+PASS - every $('id') reference in UI/game/enemy code has a matching element in index.html.
+
+SAVE MIGRATION SMOKE TEST
+A simulated real Update 1.1 save was loaded with:
+- 987 current Gems
+- 1,234 lifetime Gems
+- Normal best Wave 37
+- Hard best Wave 11
+- 3 Normal wins
+- Halloween win / Ghost Moth unlocked
+- Bite Lv 5, Carapace Lv 4, Boss Breaker Lv 2
+- existing settings and seasonal data
+PASS - all listed existing values survived migration.
+PASS - save version migrated to 9 without replacing the old values.
+PASS - new Battle Metabolism upgrade initialized at rank 0.
+PASS - new Enemy XP initialized at 0 and Enemy Level at 1.
+PASS - Autumn reward unlock initialized false without affecting Halloween unlock.
+PASS - save key remains exactly: bugbreak-update1-save
+
+ENEMY MODE PROGRESSION SMOKE TEST
+PASS - 26 Normal/Hard enemy shop entries.
+PASS - 11 Halloween-only enemy shop entries.
+PASS - 7 Harvest-only enemy shop entries.
+PASS - Hard uses the Normal ownership catalog but renders relic/Nightfall forms automatically.
+PASS - a permanently owned Boss5 selected on Wave 2 was rejected by the wave gate and Garden Ant spawned instead.
+PASS - the same owned Boss5 became the selected spawn class at Wave 48.
+PASS - Boss5 requirements: 3,300 Gems, Enemy Level 76, Wave 48.
+PASS - Harvest victory sets autumnWin=true, permanently unlocking Harvest Cicada.
+
+FINAL BOSS AUDIO
+PASS - final-normal.mp3 exists and is mapped to Normal Wave 50.
+PASS - final-hard.mp3 exists and is mapped to Hard Wave 50.
+PASS - final-halloween.mp3 exists and is mapped to Halloween Wave 20.
+PASS - final-autumn.mp3 exists and is mapped to Harvest Wave 25.
+
+PERFORMANCE
+- Enemy Mode caps active allied attackers at 10 in Performance Mode / 15 normally.
+- Only three smart defender bots are active at once.
+- Enemy XP combat awards persist without rerendering the hidden menu every hit.
+- Service worker pre-caches core code/SFX only; large music files are cached lazily after use instead of blocking initial installation.
+
+SCREENSHOTS
+Six real browser-rendered QA screenshots from the Update 1.1 base build remain included in this flat package. The current environment blocked local Chromium navigation while building Update 1.2, so this report does NOT falsely claim new browser screenshots for Enemy Mode. Update 1.2 runtime logic was smoke-tested through a DOM/canvas mock harness plus syntax/data validation.
+
+UPDATE 1.2.1 HOTFIX
+- Full build contains all Update 1.2 content plus the hotfix.
+- Enemy Mode start flow patched.
+- YouTube Mode blocks BugBreak audio playback while enabled.
+- Music, Boss Music, and SFX can be toggled independently.
+- Update 1 app icon replaced.
+- Save key remains compatible with Update 1.2 progression.
+
+
+UPDATE 1.2.4 DEFENDER EVOLUTION QA
+- enemy-mode.js syntax validation: PASS
+- Wave 1 defender tier: ROOKIE, 0 mutations, Bite only.
+- Wave 2: Dash enabled.
+- Wave 5: Specials enabled.
+- Wave 6+: mutation progression enabled, one additional mutation every six waves up to six.
+- Enemy XP gain increased and starter controlled-enemy balance corrected.
+- Save key unchanged.
+
+
+UPDATE 1.2.5 OWNER TOOLS QA
+PASS - owner UI DOM elements exist.
+PASS - ui.js/data.js/game.js/enemy-mode.js/audio.js pass Node syntax validation.
+PASS - supplied owner code produces the embedded SHA-256 digest.
+PASS - plaintext owner code is not present in ui.js.
+PASS - grants write through the existing bugbreak-update1-save object and call persist immediately.
+PASS - full build remains flat and retains the previous running-build QA screenshots.
+
+
+UPDATE 1.2.6 OWNER WAVE CONTROL STATIC QA
+- ui.js, game.js, enemy-mode.js pass Node syntax validation.
+- Owner menu includes current-round wave input and action.
+- Defender owner wave setter rebuilds the requested target via the real startWave() path, so biome, event name, enemy roster/count, HP/damage scaling, mini-bosses/Apex bosses, and boss music are recalculated.
+- Enemy Mode owner wave setter rebuilds the requested target via its real startWave() path, so defender roster/tier, dash/special gates, mutations, attacker roster, selected enemy wave gating, final bosses, and final music are recalculated.
+- Target wave is clamped to each mode's actual maximum (50 Normal/Hard, 20 Halloween, 25 Harvest).
+- Existing save key is unchanged.
